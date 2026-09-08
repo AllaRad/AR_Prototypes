@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HomeRent — Property Prototype</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f6f8; color: #20242a; }
+    header { background: white; padding: 22px 7%; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; }
+    .logo { font-size: 23px; font-weight: 700; }
+    .hero { padding: 45px 7% 25px; }
+    .hero h1 { font-size: 36px; margin: 0 0 8px; }
+    .hero p { color:#666; margin:0; }
+    .filters { margin: 20px 7%; padding: 18px; background:white; border-radius:12px; display:flex; gap:14px; flex-wrap:wrap; }
+    select { padding:11px 14px; border:1px solid #ccc; border-radius:8px; background:white; min-width:160px; }
+    .grid { padding: 10px 7% 50px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
+    .card { background:white; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+    .photo { height:150px; display:flex; align-items:center; justify-content:center; font-size:48px; background:#e7eaee; }
+    .content { padding:17px; }
+    .content h3 { margin:0 0 8px; }
+    .meta { color:#666; font-size:14px; line-height:1.6; }
+    .status { display:inline-block; margin-top:10px; padding:5px 9px; border-radius:20px; font-size:12px; background:#edf0f3; }
+    button { width:100%; margin-top:14px; padding:10px; border:0; border-radius:8px; background:#20242a; color:white; cursor:pointer; }
+    .empty { display:none; padding:30px 7%; color:#666; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">HomeRent</div>
+  <div>Rental properties</div>
+</header>
+
+<section class="hero">
+  <h1>Find your next home</h1>
+  <p>Demo prototype with mock property data.</p>
+</section>
+
+<section class="filters">
+  <select id="rooms">
+    <option value="all">All rooms</option>
+    <option value="1">1 room</option>
+    <option value="2">2 rooms</option>
+    <option value="3">3 rooms</option>
+  </select>
+
+  <select id="class">
+    <option value="all">All classes</option>
+    <option value="Economy">Economy</option>
+    <option value="Business">Business</option>
+  </select>
+
+  <select id="status">
+    <option value="all">All statuses</option>
+    <option value="Vacant">Vacant</option>
+    <option value="Rented">Rented</option>
+  </select>
+</section>
+
+<div id="empty" class="empty">No properties match these filters.</div>
+<section id="grid" class="grid"></section>
+
+<script>
+const properties = [
+  {name:"Green Park Apartment", rooms:1, cls:"Economy", status:"Vacant", price:850, icon:"🏠"},
+  {name:"Riverside Residence", rooms:2, cls:"Business", status:"Vacant", price:1450, icon:"🏢"},
+  {name:"Central Loft", rooms:2, cls:"Business", status:"Rented", price:1600, icon:"🌆"},
+  {name:"Oak Street Home", rooms:3, cls:"Economy", status:"Vacant", price:1200, icon:"🏡"},
+  {name:"Skyline Apartment", rooms:3, cls:"Business", status:"Rented", price:2100, icon:"🏙️"},
+  {name:"Garden Studio", rooms:1, cls:"Economy", status:"Rented", price:700, icon:"🌿"}
+];
+
+function render() {
+  const rooms = document.getElementById("rooms").value;
+  const cls = document.getElementById("class").value;
+  const status = document.getElementById("status").value;
+
+  const filtered = properties.filter(p =>
+    (rooms === "all" || String(p.rooms) === rooms) &&
+    (cls === "all" || p.cls === cls) &&
+    (status === "all" || p.status === status)
+  );
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = filtered.map((p, i) => `
+    <article class="card">
+      <div class="photo">${p.icon}</div>
+      <div class="content">
+        <h3>${p.name}</h3>
+        <div class="meta">${p.rooms} room${p.rooms > 1 ? "s" : ""} · ${p.cls} class<br>$${p.price}/month</div>
+        <span class="status">${p.status}</span>
+        <button onclick="showDetails('${p.name}', '${p.status}')">View details</button>
+      </div>
+    </article>
+  `).join("");
+
+  document.getElementById("empty").style.display = filtered.length ? "none" : "block";
+}
+
+function showDetails(name, status) {
+  alert(name + "\n\nStatus: " + status + "\n\nThis is a clickable prototype using mock data.");
+}
+
+["rooms","class","status"].forEach(id => document.getElementById(id).addEventListener("change", render));
+render();
+</script>
+</body>
+</html>
